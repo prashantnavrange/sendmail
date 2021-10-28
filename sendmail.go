@@ -46,4 +46,5 @@ func Send(to []string, host, from, subject, emailbody string) {
 		fmt.Println(err)
 	}
 	c.Quit()
+	return
 }
