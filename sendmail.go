@@ -7,31 +7,31 @@ import (
 	"strings"
 )
 
-func Send(to []string, host, from, subject, emailbody string) error {
+func Send(to []string, host, from, subject, emailbody string) {
 	r := strings.NewReplacer("\r\n", "", "\r", "", "\n", "", "%0a", "", "%0d", "")
 	fmt.Println("r", r)
 	c, err := smtp.Dial(host)
 	if err != nil {
 		fmt.Println(err)
-		return err
+		return
 	}
 	defer c.Close()
 	if err = c.Mail(r.Replace(from)); err != nil {
 		fmt.Println(err)
-		return err
+		return
 	}
 	for i := range to {
 		to[i] = r.Replace(to[i])
 		if err = c.Rcpt(to[i]); err != nil {
 			fmt.Println(err)
-			return err
+			return
 		}
 	}
 
 	w, err := c.Data()
 	if err != nil {
 		fmt.Println(err)
-		return err
+		return
 	}
 
 	msg := "To: " + strings.Join(to, ",") + "\r\n" +
@@ -48,8 +48,8 @@ func Send(to []string, host, from, subject, emailbody string) error {
 	err = w.Close()
 	if err != nil {
 		fmt.Println(err)
-		return err
+		return
 	}
 	c.Quit()
-	return nil
+	return
 }
